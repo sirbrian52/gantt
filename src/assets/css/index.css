@@ -1,0 +1,380 @@
+
+* {
+    box-sizing: border-box;
+  }
+  
+  body {
+    font-family: "Roboto", sans-serif;
+    margin: 0;
+    padding: 0;
+  }
+  
+  .container {
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background-color: #f4f4f4;
+    overflow: auto;
+  }
+
+  
+  header {
+    width: 100%;
+    padding: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #d9534f;
+    color: #fff;
+  }
+  
+  .title {
+    display: flex;
+    align-items: center; 
+  }
+  
+  .title img {
+    width: 30px; 
+    height: 30px; 
+    margin-right: 15px; 
+    border-radius: 50%; /* Membuat gambar berbentuk bulat jika diperlukan */
+  }
+
+  .title-text{
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .title h1 {
+    margin: 0; /* Menghapus margin default */
+    font-size: 24px;
+    font-weight: bold;
+  }
+  
+  .title h2 {
+    margin: 0; /* Menghapus margin default */
+    font-size: 16px;
+  }
+  
+  .burger {
+    display: flex; /* Hidden by default */
+    flex-direction: column;
+    cursor: pointer;
+  }
+  
+  .burger-line {
+    width: 30px;
+    height: 3px;
+    background-color: #fff;
+    margin: 5px 0;
+    transition: all 0.3s;
+  }
+  
+
+  .nav-menu {
+    position: fixed; /* Fixed positioning to stay in place while scrolling */
+    top: 0; /* Aligns to the top of the viewport */
+    left: -250px; /* Initially hidden off the screen on the left */
+    width: 250px; /* Set the width of the sidenav */
+    height: 100vh; /* Full viewport height */
+    background-color: #fff;
+    color: #000;
+    padding: 20px;
+    border-radius: 0 4px 4px 0; /* Rounded corners on the right side */
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.2); /* Shadow effect */
+    overflow: auto; /* Scrollable if content overflows */
+    transition: transform 0.3s ease; /* Smooth transition for sliding effect */
+    transform: translateX(-100%); /* Initially hide it offscreen */
+  }
+  
+  /* Show the sidenav when open */
+  .nav-menu.open {
+    transform: translateX(0); /* Slide in from the left */
+  }
+  
+  /* Ensure the list has no bullets */
+  .nav-menu ul {
+    list-style: none; /* Removes the bullets */
+    padding: 0; /* Removes default padding */
+    margin: 0; /* Removes default margin */
+  }
+  
+  /* Reset list item margins */
+  .nav-menu ul li {
+    margin: 0; /* Adjust as needed */
+  }
+  
+  /* List item links */
+  .nav-menu ul li a {
+    text-decoration: none;
+    color: #000;
+    font-size: 16px;
+    display: block; /* Ensure links occupy full width */
+    padding: 10px; /* Add padding for better spacing */
+    transition: background-color 0.3s ease;
+  }
+  
+  /* Hover effect for links */
+  .nav-menu ul li a:hover {
+    background-color: #eee; /* Highlight color on hover */
+  }
+  
+  /* Optional: Style for close button */
+  .sidenav-close {
+    position: absolute;
+    top: 20px; /* Adjust as needed */
+    right: 20px; /* Align to the right of the sidenav */
+    cursor: pointer;
+    font-size: 24px;
+    color: #000;
+  }
+  
+  .user {
+    display: flex;
+    align-items: center;
+  }
+  
+  .user span {
+    margin-right: 10px;
+  }
+  
+  .user img {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+  }
+  
+  main {
+    width: 100%;
+    padding: 20px;
+    background-color: #fff;
+  }
+  
+  h1 {
+    margin: 0 0 10px 0;
+    font-size: 24px;
+    font-weight: bold;
+  }
+  
+  p {
+    margin: 0 0 10px 0;
+    font-size: 16px;
+  }
+  
+  .controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+  
+  .button {
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    padding: 8px 12px;
+    margin-right: 10px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .button:hover {
+    background-color: #eee;
+  }
+  
+  .button svg {
+    width: 16px;
+    height: 16px;
+  }
+  
+  input[type="number"] {
+    width: 50px;
+    padding: 6px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    margin-right: 10px;
+    text-align: center;
+  }
+  
+  .legend {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+  
+  .legend .item {
+    display: flex;
+    align-items: center;
+    margin-right: 20px;
+  }
+  
+  .legend .item span:first-child {
+    width: 20px;
+    height: 20px;
+    border-radius: 4px;
+    margin-right: 10px;
+  }
+  
+  .legend .item span:first-child.preparation {
+    background-color: #f0ad4e;
+  }
+  
+  .legend .item span:first-child.planning {
+    background-color: #5bc0de;
+  }
+  
+  .legend .item span:first-child.bom {
+    background-color: #d9534f;
+  }
+  
+  .legend .item span:first-child.kitting {
+    background-color: #5cb85c;
+  }
+  
+  .legend .item span:first-child.issue {
+    background-color: #f08080;
+  }
+  
+  .legend .item span:first-child.model-change {
+    background-color: #999;
+  }
+  
+  .legend .item span:first-child.production {
+    background-color: #007bff;
+  }
+  
+  .legend .item span:first-child.complete {
+    background-color: #4cae4c;
+  }
+  
+  .gantt {
+    width: 100%;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    overflow: auto;
+    height: 50vh
+    
+    
+    ;
+  }
+  
+  .gantt-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    background-color: #eee;
+  }
+  
+  .gantt-header-cell {
+    text-align: center;
+    width: 100px;
+    border-right: 1px solid #ccc;
+  }
+  
+  .gantt-header-numbers {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 5px;
+  }
+  
+  .gantt-body {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .gantt-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    border-bottom: 1px solid #ccc;
+  }
+  
+  .gantt-row-header {
+    text-align: center;
+    width: 150px;
+    border-right: 1px solid #ccc;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .gantt-row-cell {
+    width: 100px;
+    border-right: 1px solid #ccc;
+    position: relative;
+  }
+  
+  .gantt-task {
+    position: absolute;
+    top: 10px;
+    left: 0;
+    background-color: #eee;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    padding: 5px 10px;
+    cursor: pointer;
+  }
+  
+  .gantt-task-title {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 5px;
+    font-weight: bold;
+  }
+  
+  .gantt-task-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 12px;
+  }
+  
+  .gantt-task.preparation {
+    background-color: #f0ad4e;
+  }
+  
+  .gantt-task.planning {
+    background-color: #5bc0de;
+  }
+  
+  .gantt-task.bom {
+    background-color: #d9534f;
+  }
+  
+  .gantt-task.kitting {
+    background-color: #5cb85c;
+  }
+  
+  .gantt-task.issue {
+    background-color: #f08080;
+  }
+  
+  .gantt-task.model-change {
+    background-color: #999;
+  }
+  
+  .gantt-task.production {
+    background-color: #007bff;
+  }
+  
+  .gantt-task.complete {
+    background-color: #4cae4c;
+  }
+  
+  .gantt-task.cancel {
+    background-color: #f08080;
+  }
+  
+  .details {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
