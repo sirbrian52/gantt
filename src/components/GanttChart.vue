@@ -9,7 +9,7 @@
         @dragstart="onDragStart"
       >
         Drag Me
-      </div>  
+      </div>
     </div>
     <div class="flex justify-center">
       <table class="min-w-full text-sm text-left text-gray-500 border border-black">
@@ -23,41 +23,46 @@
             <th colspan="4" class="px-6 py-3 text-center border-x border-black" value="friday">Fri, 05 July 2024</th>
             <th colspan="4" class="px-6 py-3 text-center border-x border-black" value="saturday">Sat, 06 July 2024</th>
             <th colspan="4" class="px-6 py-3 text-center border-x border-black" value="sunday">Sun, 07 July 2024</th>
-            <!-- Repeat similar columns for other days -->
           </tr>
         </thead>
         <thead class="text-xs text-gray-700 uppercase bg-gray-50 border-b-8 border-black">
           <tr class="text-center border-b-8">
             <th></th>
+            <!-- group column -->
             <th scope="col" class="px-6 py-3 border-l border-black">6</th>
             <th scope="col" class="px-6 py-3 border-l border-black">12</th>
             <th scope="col" class="px-6 py-3 border-l border-black">18</th>
             <th scope="col" class="px-6 py-3 border-l border-black">24</th>
+            
             <th scope="col" class="px-6 py-3 border-l border-black">6</th>
             <th scope="col" class="px-6 py-3 border-l border-black">12</th>
             <th scope="col" class="px-6 py-3 border-l border-black">18</th>
             <th scope="col" class="px-6 py-3 border-l border-black">24</th>
+            
             <th scope="col" class="px-6 py-3 border-l border-black">6</th>
             <th scope="col" class="px-6 py-3 border-l border-black">12</th>
             <th scope="col" class="px-6 py-3 border-l border-black">18</th>
             <th scope="col" class="px-6 py-3 border-l border-black">24</th>
+            
             <th scope="col" class="px-6 py-3 border-l border-black">6</th>
             <th scope="col" class="px-6 py-3 border-l border-black">12</th>
             <th scope="col" class="px-6 py-3 border-l border-black">18</th>
             <th scope="col" class="px-6 py-3 border-l border-black">24</th>
+            
             <th scope="col" class="px-6 py-3 border-l border-black">6</th>
             <th scope="col" class="px-6 py-3 border-l border-black">12</th>
             <th scope="col" class="px-6 py-3 border-l border-black">18</th>
             <th scope="col" class="px-6 py-3 border-l border-black">24</th>
+            
             <th scope="col" class="px-6 py-3 border-l border-black">6</th>
             <th scope="col" class="px-6 py-3 border-l border-black">12</th>
             <th scope="col" class="px-6 py-3 border-l border-black">18</th>
             <th scope="col" class="px-6 py-3 border-l border-black">24</th>
+            
             <th scope="col" class="px-6 py-3 border-l border-black">6</th>
             <th scope="col" class="px-6 py-3 border-l border-black">12</th>
             <th scope="col" class="px-6 py-3 border-l border-black">18</th>
             <th scope="col" class="px-6 py-3 border-l border-black">24</th>
-            <!-- Repeat similar columns for other time slots -->
           </tr>
         </thead>
         <tbody>
@@ -97,7 +102,8 @@
               <div v-for="(task, index) in tasks['AS-03']" :key="index"
                 :class="['relative', 'text-center', 'rounded', 'cursor-pointer', 'p-2', task.color]"
                 :style="{ width: task.width + 'px', left: task.left + 'px', color: getTextColor(task.color) }"
-                @mousedown="startResizing($event, index, 'AS-03', 'right')">
+                @mousedown="startResizing($event, index, 'AS-03', 'right')"
+              >
                 {{ task.task }}
                 <!-- Resizing Handles -->
                 <div class="absolute right-0 top-0 h-full w-2 cursor-ew-resize" @mousedown.stop.prevent="startResizing($event, index, 'AS-03', 'right')"></div>
@@ -105,7 +111,6 @@
               </div>
             </td>
           </tr>
-          <!-- Repeat similar rows for other AS rows -->
         </tbody>
       </table>
     </div>
@@ -116,91 +121,118 @@
 export default {
   data() {
     return {
+      dragData: null,
       tasks: {
         'AS-01': [],
         'AS-02': [],
-        'AS-03': [],
+        'AS-03': []
       },
-      resizingIndex: null,
-      resizingDirection: null,
-      initialX: 0,
-      initialWidth: 0,
-      initialLeft: 0,
+      days: [
+        { date: 'Mon, 01 July 2024' },
+        { date: 'Tue, 02 July 2024' },
+        { date: 'Wed, 03 July 2024' },
+        { date: 'Thu, 04 July 2024' },
+        { date: 'Fri, 05 July 2024' },
+        { date: 'Sat, 06 July 2024' },
+        { date: 'Sun, 07 July 2024' }
+      ],
       taskCounter: 0,
+      isResizing: false,
+      resizeStartX: 0,
+      resizingTaskIndex: null,
+      resizingTaskKey: null,
+      resizingSide: null,
+      taskColors: ['bg-red-500', 'bg-blue-500', 'bg-green-500', 'bg-yellow-500', 'bg-purple-500', 'bg-pink-500'],
     };
   },
   methods: {
-    onDrop(event, rowKey) {
-      const data = JSON.parse(event.dataTransfer.getData('text/plain'));
-      this.taskCounter++;
-      const newTask = {
-        task: `Task ${this.taskCounter}`,
-        color: this.getRandomColor(),
-        left: 0, // Default left position
-        width: this.snapToHourlyInterval(data.width || 100),
-      };
-      this.tasks[rowKey].push(newTask);
+    onDragStart(event) {
+      this.dragData = event.target.innerText;
     },
-    startResizing(event, index, rowKey, direction) {
-      this.resizingIndex = { index, rowKey };
-      this.resizingDirection = direction;
-      this.initialX = event.clientX;
-      this.initialWidth = this.tasks[rowKey][index].width;
-      this.initialLeft = this.tasks[rowKey][index].left;
+    onDrop(event, key) {
+      const dropX = event.offsetX;
+      this.addTask(key, dropX);
+    },
+    addTask(key, left) {
+      const width = 100; // Default task width (e.g., 100px)
+      const color = this.taskColors[this.taskCounter % this.taskColors.length];
+      this.tasks[key].push({ task: `Task ${this.taskCounter + 1}`, width, left, color });
+      this.taskCounter++;
+    },
+    startResizing(event, index, key, side) {
+      this.isResizing = true;
+      this.resizeStartX = event.clientX;
+      this.resizingTaskIndex = index;
+      this.resizingTaskKey = key;
+      this.resizingSide = side;
 
-      document.addEventListener('mousemove', this.onResizing);
-      document.addEventListener('mouseup', this.onResizeEnd);
+      window.addEventListener('mousemove', this.onResizing);
+      window.addEventListener('mouseup', this.stopResizing);
     },
     onResizing(event) {
-      if (this.resizingIndex !== null) {
-        const deltaX = event.clientX - this.initialX;
-        const { index, rowKey } = this.resizingIndex;
-        const task = this.tasks[rowKey][index];
+      if (!this.isResizing) return;
 
-        if (this.resizingDirection === 'right') {
-          task.width = this.snapToHourlyInterval(this.initialWidth + deltaX);
-        } else if (this.resizingDirection === 'left') {
-          const newWidth = this.snapToHourlyInterval(this.initialWidth - deltaX);
-          if (newWidth >= 0) {
-            task.width = newWidth;
-            task.left = Math.max(this.initialLeft + deltaX, 0);
-          }
-        }
+      const deltaX = event.clientX - this.resizeStartX;
+      const task = this.tasks[this.resizingTaskKey][this.resizingTaskIndex];
+
+      if (this.resizingSide === 'right') {
+        const newWidth = task.width + deltaX;
+        task.width = this.snapToMinuteInterval(newWidth, 15); // Snap to 15-minute intervals
+      } else if (this.resizingSide === 'left') {
+        const newLeft = task.left + deltaX;
+        const newWidth = task.width - deltaX;
+        task.left = this.snapToMinuteInterval(newLeft, 15);
+        task.width = this.snapToMinuteInterval(newWidth, 15);
       }
+
+      this.resizeStartX = event.clientX;
     },
-    onResizeEnd() {
-      this.resizingIndex = null;
-      this.resizingDirection = null;
-      document.removeEventListener('mousemove', this.onResizing);
-      document.removeEventListener('mouseup', this.onResizeEnd);
-    },
-    onDragStart(event) {
-      event.dataTransfer.setData('text/plain', JSON.stringify({ task: 'Task 1', color: 'blue', width: 100 }));
+    stopResizing() {
+      this.isResizing = false;
+      this.resizingTaskIndex = null;
+      this.resizingTaskKey = null;
+      this.resizingSide = null;
+
+      window.removeEventListener('mousemove', this.onResizing);
+      window.removeEventListener('mouseup', this.stopResizing);
     },
     snapToHourlyInterval(value) {
-      const hourWidth = 60; // Example: 60px per hour
+      const hourWidth = 100; // Width representing one hour
       return Math.round(value / hourWidth) * hourWidth;
     },
-    getRandomColor() {
-      const colors = ['bg-blue-500', 'bg-green-500', 'bg-red-500', 'bg-yellow-500']; // Exclude 'bg-white'
-      return colors[Math.floor(Math.random() * colors.length)];
+    snapToMinuteInterval(value, minuteInterval) {
+      const hourWidth = 100; // Width representing one hour
+      const minuteWidth = hourWidth / 60;
+      const intervalWidth = minuteWidth * minuteInterval;
+      return Math.round(value / intervalWidth) * intervalWidth;
     },
     getTextColor(bgColorClass) {
-      const darkBackgroundColors = ['bg-blue-500', 'bg-green-500', 'bg-red-500', 'bg-black'];
-      return darkBackgroundColors.includes(bgColorClass) ? 'white' : 'black';
+      const bgColorMap = {
+        'bg-red-500': '#f56565',
+        'bg-blue-500': '#4299e1',
+        'bg-green-500': '#48bb78',
+        'bg-yellow-500': '#ecc94b',
+        'bg-purple-500': '#9f7aea',
+        'bg-pink-500': '#ed64a6',
+      };
+      const bgColor = bgColorMap[bgColorClass];
+      return this.getLuminance(bgColor) > 0.5 ? '#000000' : '#ffffff';
+    },
+    getLuminance(color) {
+      const rgb = color.replace(/[^\d,]/g, '').split(',');
+      const r = parseInt(rgb[0]) / 255;
+      const g = parseInt(rgb[1]) / 255;
+      const b = parseInt(rgb[2]) / 255;
+
+      const luminance = 0.2126 * r + 0.7152 * g + 0.0722 * b;
+      return luminance;
     },
   },
 };
 </script>
 
 <style scoped>
-.relative {
-  position: relative;
-}
-.absolute {
-  position: absolute;
-}
-.cursor-ew-resize {
-  cursor: ew-resize;
-}
+  .cursor-ew-resize {
+    cursor: ew-resize;
+  }
 </style>
