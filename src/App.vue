@@ -1,19 +1,14 @@
-
 <script>
-import NavbarNew from './components/NavbarNew.vue';
-import GanttChart from './components/GanttChart.vue';
+import Table from './components/Table.vue';
 export default {
     name: "App",
     components: {
-      NavbarNew,
-      GanttChart,
-      
+      Table
     }
   };
 </script>
 
 <template>
-  <NavbarNew/>
-  <GanttChart/>
+  <Table/>
 </template>
   
